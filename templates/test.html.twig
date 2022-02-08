@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+{% block title %}Page de test{% endblock %}
+
+{% block body %}
+    <h1 class="text-center my-3">Hello Je suis une page de test</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda illum dolores qui repellendus minus velit nobis impedit facilis necessitatibus vero, porro doloremque pariatur quisquam eaque neque fuga, quos laborum architecto!
+    Cupiditate quod veritatis quisquam, illo ea eum voluptatibus soluta ad iusto temporibus officiis voluptatum vel nam aut, dolor magnam consequatur ex explicabo molestiae molestias. Totam adipisci ipsa veritatis tempora soluta!
+    Facere aperiam omnis accusamus iure voluptatem voluptatibus ratione animi. Itaque ducimus quia cupiditate, suscipit nesciunt nam, corporis neque consequuntur necessitatibus incidunt amet porro blanditiis, fuga harum perferendis debitis eum quidem.
+    Quo voluptatibus, quia, facilis dignissimos culpa tenetur architecto laboriosam cum necessitatibus, odio adipisci reprehenderit. Sint, aliquam suscipit voluptatem eaque incidunt corrupti. Est obcaecati molestias fugit, minus dolorum quidem et soluta.
+    Quas officia ipsam sapiente dolores incidunt mollitia, tempora non impedit, voluptatibus perspiciatis iusto facilis facere similique earum magni odit quisquam nemo. Sit magnam praesentium minima. Libero illum adipisci delectus ex.</p>
+
+    {% set titre = "Titre de partie" %} {# On déclare une variable #}
+    <h2>{{titre}}</h2>
+
+    <p><span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium quisquam qui in dicta quo, perspiciatis numquam, libero amet quis quas nihil cum illo aliquid deserunt sit itaque. Quae, ea voluptatibus.</span><span>Facere aliquid veritatis autem quam fugit maxime consequatur mollitia. At alias ducimus aliquam. Officia quidem deserunt, quas nemo commodi sint reprehenderit corporis tempore odit blanditiis. Voluptates natus iusto optio! Assumenda.</span></p>
+
+    <h2>{{titre2}}</h2> {# On récupère la variable titre2 passée dans le tableau de paramètres du controller #}
+
+{% endblock %}
+{# Ceci est un commentaire #}
+{# {% %} => Permet d'ajouter un fonctionnement ou un élément de twig #}
+{# {{ }} permet d'afficher une information #}
