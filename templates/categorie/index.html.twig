@@ -9,7 +9,7 @@
     {% if categories %}
         <ul class='list-group col-3 mx-auto'>
             {% for categorie in categories %}
-                <li class="list-group-item">{{categorie.name}}</li>
+                <li class="list-group-item"><a href={{ path('categorie_single', {id: categorie.id}) }}>{{categorie.name}}</a></li>
             {% endfor %}
         </ul>
     {% else %}

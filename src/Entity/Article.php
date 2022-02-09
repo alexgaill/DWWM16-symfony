@@ -25,7 +25,7 @@ class Article
     {
         $this->subContent = substr($this->content, 0, 50) . "...";
     }
-
+    
     #[ORM\Column(type: 'datetime', updatable:false)]
     private $createdAt;
 
@@ -69,7 +69,6 @@ class Article
 
         return $this;
     }
-
     /**
      * Get the value of subContent
      *

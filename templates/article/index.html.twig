@@ -15,6 +15,7 @@
             <th>Titre</th>
             <th>Aperçu</th>
             <th>Date de création</th>
+            <th>Opérations</th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
                     Pour corriger ce problème, on utilise le filtre date afin de définir sous quel format de string on veut l'afficher
                  #}
                 <td>{{article.createdAt|date("d M Y | H:i:s", "Europe/Paris")}}</td>
+                <td><a href={{ path('article_single', {id: article.id})}}><button class="btn btn-primary">Voir en détail</button></a></td>
             </tr>
         {% else %}
             <tr class="table-danger">

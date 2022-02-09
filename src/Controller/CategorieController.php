@@ -30,8 +30,16 @@ class CategorieController extends AbstractController
     }
 
     /**
-     * Exercice Créer l'ArticleController
-     * Dans la méthode index, récupérer tous les articles et les envoyer vers un template
-     * Dans le template, faire un tableau affichant les id, title, createdAt de chaque article avec en plus un morceau du content (max 50 caractères)
+     * Pour récupérer un élément en fonction de son id, on précise dans la route le paramètre récupéré dans l'url ({id})
+     * Ce paramètre doit ensuite être récupéré en paramètre de la méthode (on le place entre les parenthèses)
+     * Il ne nous reste qu'à utiliser la méthode find du repository pour récupérer la catégorie en fonction de son id
      */
+    #[Route('/categorie/{id}', name: 'categorie_single')]
+    public function single(int $id, ManagerRegistry $manager):Response
+    {
+        return $this->render('categorie/single.html.twig', [
+            'categorie' => $manager->getRepository(Categorie::class)->find($id)
+        ]);
+    }
+
 }
