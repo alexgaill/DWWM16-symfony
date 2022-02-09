@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Exercice Créer l'ArticleController
@@ -24,6 +26,29 @@ class ArticleController extends AbstractController
             'articlesList' => $repository->findAll()
         ]);
     }
+
+    #[Route("/article/save", name:"article_save", methods: ["POST", "GET"])]
+    public function add(Request $request, ManagerRegistry $manager):Response
+    {
+        $article = new Article;
+
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $manager->getManager();
+            $article->setCreatedAt(new \DateTime());
+            $em->persist($article);
+            $em->flush();
+
+            return $this->redirectToRoute('article_single', ['id' => $article->getId()]);
+        }
+        dump($request);
+        return $this->render('article/save.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
     #[Route("/article/{id}", name: 'article_single')]
     public function single (int $id, ManagerRegistry $manager):Response
     {
