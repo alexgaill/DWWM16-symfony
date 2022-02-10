@@ -3,8 +3,13 @@ namespace App\Entity;
 
 use App\Repository\CategorieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(CategorieRepository::class)]
+#[
+    ORM\Entity(CategorieRepository::class),
+    UniqueEntity('name', message:"Une catégorie existe déjà avec ce nom")
+]
 class Categorie {
 
     #[ORM\Id]
@@ -12,7 +17,16 @@ class Categorie {
     #[ORM\Column(type:'integer')]
     private int $id;
 
-    #[ORM\Column(type:"string", length:50)]
+    #[
+        ORM\Column(type:"string", length:50),
+        Assert\Length(
+            min: 10,
+            minMessage: "La catégorie doit contenir au minimum {{ limit }} caractères."
+        ),
+        Assert\NotBlank(
+            message:"Le nom de la catégorie ne peut être vide."
+        )
+    ]
     private string $name;
 
     /**
