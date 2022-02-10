@@ -51,6 +51,7 @@ class CategorieController extends AbstractController
         //     ])
         //     ->getForm();
 
+        // On génère le formulaire avec la commande php bin/console make:form
         $form = $this->createForm(CategorieType::class, $categorie);
         // On associe les informations obtenues en POST au formulaire
         $form->handleRequest($request);
@@ -81,4 +82,42 @@ class CategorieController extends AbstractController
             'categorie' => $manager->getRepository(Categorie::class)->find($id)
         ]);
     }
+
+
+    #[Route("/categorie/{id}/update", name:"categorie_update", methods: ["GET", "POST"], requirements:['id' => "\d+"])]
+    public function update (Categorie $categorie, Request $request, ManagerRegistry $manager):Response
+    {
+        // Symfony peut récupérer la catégorie directement en fonction de l'id en paramètre de la méthode du controller
+
+        $form = $this->createForm(CategorieType::class, $categorie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $manager->getManager();
+            $em->persist($categorie);
+            $em->flush();
+            return $this->redirectToRoute('categorie_single', ['id' => $categorie->getId()]);
+        }
+
+        return $this->render("categorie/update.html.twig", [
+            'form' => $form->createView(),
+            'categorie' => $categorie
+        ]);
+    }
+
+    #[Route("/categorie/{id}/delete", name:"categorie_delete")]
+    public function delete(Categorie $categorie, ManagerRegistry $manager): Response
+    {
+        // On appelle le manager et on utilise la méthode remove qui ajoute l'élément à supprimer à la queue des exécutions SQL
+        $em = $manager->getManager();
+        $em->remove($categorie);
+        $em->flush();
+        $this->addFlash('success', "La catégorie '".$categorie->getName()."' a bien été supprimée");
+        return $this->redirectToRoute('categorie');
+    }
 }
+
+/**
+ * Refaire les méthodes update et delete pour article
+ * Ajouter des messages flash de confirmation d'exécution
+ */

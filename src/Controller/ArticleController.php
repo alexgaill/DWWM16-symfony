@@ -36,14 +36,19 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $manager->getManager();
-            $article->setCreatedAt(new \DateTime());
-            $em->persist($article);
-            $em->flush();
-
-            return $this->redirectToRoute('article_single', ['id' => $article->getId()]);
+            try {
+                $em = $manager->getManager();
+                $article->setCreatedAt(new \DateTime());
+                $em->persist($article);
+                $em->flush();
+                $this->addFlash('success', "L'article a bien été enregistré");
+                return $this->redirectToRoute('article_single', ['id' => $article->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('danger', "Une erreur s'est produite, réessayez!");
+                $this->addFlash('danger', $e->getMessage());
+            }
         }
-        dump($request);
+        
         return $this->render('article/save.html.twig', [
             'form' => $form->createView()
         ]);
@@ -57,5 +62,34 @@ class ArticleController extends AbstractController
         return $this->render("article/single.html.twig", [
             'article' => $article
         ]);
+    }
+
+    #[Route("/article/{id}/update", name:"article_update", methods:["POST", "GET"], requirements: ['id' => "\d+"])]
+    public function update(Article $article, Request $request, ManagerRegistry $manager):Response
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $manager->getManager();
+            $em->persist($article);
+            $em->flush();
+            $this->addFlash('success', "La catégorie a bien été modifiée");
+            return $this->redirectToRoute('article_single', ['id' => $article->getId()]);
+        }
+
+        return $this->render('article/update.html.twig', [
+            'form' => $form->createView(),
+            'article' => $article
+        ]);
+    }
+
+    #[Route("/article/{id}/delete", name:"article_delete", methods:["GET"], requirements:['id' => "\d+"])]
+    public function delete (Article $article, ManagerRegistry $manager):Response
+    {
+        $em = $manager->getManager();
+        $em->remove($article);
+        $em->flush();
+        $this->addFlash("success", "L'article ". $article->getTitle(). " a bien été supprimé!");
+        return $this->redirectToRoute('article');
     }
 }

@@ -4,4 +4,12 @@
     <h1 class="text-center my-5">{{article.title}}</h1>
     <p class="mb-3">{{article.content}}</p>
     <small class="text-success">Article rédigé le {{article.createdAt|date("d M Y")}}</small>
+
+    <div>
+        <p>Options:</p>
+        <div>
+            <a href={{ path('article_update', {id: article.id})}}><button class="btn btn-warning">Modifier</button></a>
+            <a href={{ path('article_delete', {id: article.id})}}><button class="btn btn-danger">Supprimer</button></a>
+        </div>
+    </div>
 {% endblock %}

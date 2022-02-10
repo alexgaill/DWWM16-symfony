@@ -35,6 +35,16 @@
                     </div>
                 </div>
             </nav>
+            <div class="mt-3">
+                {% for type, messages in app.flashes %}
+                    <div class="alert alert-{{type}} alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            {{message}}
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
         </header>
         <main class="container">
             {% block body %}{% endblock %}

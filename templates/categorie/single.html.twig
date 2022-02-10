@@ -3,6 +3,18 @@
 {% block body %}
 {% if categorie %}
     <h1>{{categorie.name}}</h1>
+
+    <div>
+        <p>Options:</p>
+        <div>
+            <a href={{path('categorie_update', {id: categorie.id})}}>
+                <button class="btn btn-primary">Modifier</button>
+            </a>
+            <a href={{path('categorie_delete', {id: categorie.id})}}>
+                <button class="btn btn-danger">Supprimer</button>
+            </a>
+        </div>
+    </div>
 {% else %}
     <h1>Cette catégorie n'existe pas</h1>
 {% endif %}
