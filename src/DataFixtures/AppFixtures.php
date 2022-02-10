@@ -49,15 +49,22 @@ class AppFixtures extends Fixture
     {
         // Boucle permettant de créer 5 catégories et de les ajouter à la queue (file d'attente pour l'enregistrement en BDD)
         for ($i=0; $i < 5; $i++) { 
-            // persist ajoute l'objet en file d'attente
-            $manager->persist($this->createCategorie());
+            // On créé une catégorie
+            $categorie = $this->createCategorie();
+            // persist ajoute la catégorie en file d'attente
+            $manager->persist($categorie);
+            
+            // Boucle permettant de créer 10 articles et de les ajouter à la queue (file d'attente pour l'enregistrement en BDD)
+            for ($j=0; $j < 10; $j++) { 
+                // On créé un article
+                $article = $this->createArticle();
+                // On lui attribue la catégorie précédemment crée
+                $article->setCategorie($categorie);
+                // On persist la catégorie
+                $manager->persist($article);
+            }
+            // On utilise la méthode flush pour synchroniser la mémoire tampon (générée par le persist) avec la BDD
         }
-        
-        // Boucle permettant de créer 10 articles et de les ajouter à la queue (file d'attente pour l'enregistrement en BDD)
-        for ($j=0; $j < 10; $j++) { 
-            $manager->persist($this->createArticle());
-        }
-        // On utilise la méthode flush pour syn chroniser la mémoire tampon (générée par le persist) avec la BDD
         $manager->flush();
     }
 

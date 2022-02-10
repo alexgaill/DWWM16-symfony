@@ -21,14 +21,19 @@ class Article
 
     private string $subContent;
 
+    
+    #[ORM\Column(type: 'datetime', updatable:false)]
+    private $createdAt;
+    
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'articles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $categorie;
+    
     public function __construct()
     {
         $this->subContent = substr($this->content, 0, 50) . "...";
     }
     
-    #[ORM\Column(type: 'datetime', updatable:false)]
-    private $createdAt;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +94,18 @@ class Article
     public function setSubContent(string $subContent): self
     {
         $this->subContent = $subContent;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
 
         return $this;
     }

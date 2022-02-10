@@ -2,8 +2,17 @@
 
 {% block body %}
 {% if categorie %}
-    <h1>{{categorie.name}}</h1>
-
+    <h1 class="text-center">{{categorie.name}}</h1>
+    <hr class="my-3">
+    <h2 class="mb-3">Liste des articles de cette catégorie</h2>
+    <ul class="list-group">
+        {% for article in categorie.articles %}
+            <li class="list-group-item">
+                <a href={{path('article_single', {id:article.id})}}>{{article.title}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <hr class="my-3">
     <div>
         <p>Options:</p>
         <div>

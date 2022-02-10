@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Article;
+use App\Entity\Categorie;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -23,6 +25,10 @@ class ArticleType extends AbstractType
                 'attr' => [
                     'placeholder' => "J'écris mon article ici..."
                 ]
+            ])
+            ->add('categorie', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'name'
             ])
             ->add('submit', SubmitType::class, [
                 'label' => "Enregistrer l'article"
