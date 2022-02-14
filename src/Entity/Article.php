@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Article
 {
     #[ORM\Id]
@@ -28,6 +30,13 @@ class Article
     #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'articles')]
     #[ORM\JoinColumn(nullable: false)]
     private $categorie;
+
+    #[ORM\Column(type: 'string', length: 40, nullable: true)]
+    #[Assert\File(
+        mimeTypes:["image/png", "image/jpeg"],
+        mimeTypesMessage: "Le format fichier ne correspond pas aux formats attendus"
+    )]
+    private $picture;
     
     public function __construct()
     {
@@ -108,5 +117,26 @@ class Article
         $this->categorie = $categorie;
 
         return $this;
+    }
+
+    public function getPicture()
+    {
+        return $this->picture;
+    }
+
+    public function setPicture($picture): self
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
+    #[ORM\PostRemove]
+    public function deletePicture()
+    {
+        if (file_exists(__DIR__. '/../../public/upload/'. $this->picture)) {
+            unlink(__DIR__. '/../../public/upload/'. $this->picture);
+        }
+        return true;
     }
 }

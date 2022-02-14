@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Exercice Créer l'ArticleController
@@ -39,6 +41,27 @@ class ArticleController extends AbstractController
             try {
                 $em = $manager->getManager();
                 $article->setCreatedAt(new \DateTime());
+
+                // Je récupère l'image
+                $image = $article->getPicture();
+                // On génère un nom unique pour les images
+                // $image->guessExtension() permet de récupérer le mimeType d'un fichier pour le réutiliser
+                $imageName = md5(uniqid()) .'.'. $image->guessExtension();
+                // move permet de déplacer une image dans un dossier.
+                // Elle prend 2 paramètres:
+                //  - Le dossier dans lequel on enregistre l'image
+                //  - Le nom de l'image
+                try {
+                    $image->move(
+                        $this->getParameter('upload_files'),
+                        $imageName
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('danger', "Une erreur s'est produite, réessayez!");
+                    $this->addFlash('danger', $e->getMessage());
+                }
+                $article->setPicture($imageName);
+
                 $em->persist($article);
                 $em->flush();
                 $this->addFlash('success', "L'article a bien été enregistré");
@@ -67,9 +90,29 @@ class ArticleController extends AbstractController
     #[Route("/article/{id}/update", name:"article_update", methods:["POST", "GET"], requirements: ['id' => "\d+"])]
     public function update(Article $article, Request $request, ManagerRegistry $manager):Response
     {
+        if($article->getPicture()){
+            $article->setPicture(
+                new File($this->getParameter('upload_files').'/'. $article->getPicture())
+            );
+        }
+
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $article->getPicture();
+            $imageName = md5(uniqid()) .'.'. $image->guessExtension();
+            
+            try {
+                $image->move(
+                    $this->getParameter('upload_files'),
+                    $imageName
+                );
+            } catch (FileException $e) {
+                $this->addFlash('danger', "Une erreur s'est produite, réessayez!");
+                $this->addFlash('danger', $e->getMessage());
+            }
+            $article->setPicture($imageName);
+
             $em = $manager->getManager();
             $em->persist($article);
             $em->flush();

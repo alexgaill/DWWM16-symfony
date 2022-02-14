@@ -2,6 +2,10 @@
 
 {% block body %}
     <h1 class="text-center my-5">{{article.title}}</h1>
+    {% if article.picture %}
+        <img src={{ asset('upload/' ~ article.picture) }}
+        alt="" class="col-9 mx-auto">
+    {% endif %}
     <p class="mb-3">{{article.content}}</p>
     <small class="text-success">Article rédigé le {{article.createdAt|date("d M Y")}} et appartenant à la catégorie 
         <a class="text-success" href={{path('categorie_single', {id:article.categorie.id})}}>{{article.categorie.name|upper}}</a>
