@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +30,10 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route("/article/save", name:"article_save", methods: ["POST", "GET"])]
+    #[
+        Route("/article/save", name:"article_save", methods: ["POST", "GET"]),
+        IsGranted(data:"ROLE_ADMIN", message:"Vous n'avez pas les droits")
+    ]
     public function add(Request $request, ManagerRegistry $manager):Response
     {
         $article = new Article;
@@ -90,6 +94,10 @@ class ArticleController extends AbstractController
     #[Route("/article/{id}/update", name:"article_update", methods:["POST", "GET"], requirements: ['id' => "\d+"])]
     public function update(Article $article, Request $request, ManagerRegistry $manager):Response
     {
+        if(!$this->isGranted("ROLE_ADMIN")){
+            $this->addFlash("danger", "Vous n'avez pas les droits pour modifier un article!");
+            return $this->redirectToRoute("article");
+        }
         if($article->getPicture()){
             $article->setPicture(
                 new File($this->getParameter('upload_files').'/'. $article->getPicture())
