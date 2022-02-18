@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,37 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    // /**
-    //  * @return Article[] Returns an array of Article objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Article[] Returns an array of Article objects
+     */
+    public function findLorem()
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('a');
 
-    /*
-    public function findOneBySomeField($value): ?Article
+        $qb->select(['a.title', 'a.content'])
+            ->orWhere($qb->expr()->like('a.title', $qb->expr()->literal('% voluptas %')))
+            ->orWhere("a.content LIKE '% voluptas %'")
+            ->orderBy('a.id', 'ASC')
+            ->setMaxResults(5)
+        ;
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Retourne les 5 derniers articles contenant le mot voluptas
+     *
+     * @return array<Article>
+     */
+    public function findVoluptas(): array
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
+        ->select(['a.title', 'a.content'])
+        ->orWhere("a.title LIKE '% voluptas %'")
+        ->orWhere("a.content LIKE '% voluptas %'")
+        ->orderBy('a.id', 'ASC')
+        ->setMaxResults(5)
+        ->getQuery()
+        ->getResult()
         ;
     }
-    */
 }

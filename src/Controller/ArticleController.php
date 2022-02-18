@@ -21,6 +21,14 @@ use Symfony\Component\HttpFoundation\File\File;
  */
 class ArticleController extends AbstractController
 {
+    #[Route(path:'/', name:'accueil')]
+    public function accueil (ManagerRegistry $manager):Response
+    {
+        return $this->render('article/accueil.html.twig', [
+            'articleList' => $manager->getRepository(Article::class)->findVoluptas()
+        ]);
+    }
+
     #[Route('/article', name: 'article')]
     public function index(ArticleRepository $repository): Response
     {

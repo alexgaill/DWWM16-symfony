@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Bienvenue</h1>
+
+    <p>Voici la liste de nos 5 derniers articles contenant le mot lorem</p>
+    <div class="d-flex flex-wrap justify-content-between">
+    {% for article in articleList %}
+        <div class="card my-3" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{article.title}}</h5>
+                <p class="card-text">{{article.content}}</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    {% else %}
+        <p>Il n'y a pas d'articles avec le mot Lorem</p>
+    {% endfor %}
+    </div>
+{% endblock %}
